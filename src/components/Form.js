@@ -1,47 +1,25 @@
-import React, { useEffect, useState } from 'react';
+'use client'
+
+import { useState } from "react";
 import PropTypes from 'prop-types';
+import { Button, Col, Form } from "react-bootstrap";
 
-// create the default state for the form on CREATE
 const initialState = {
-  name: '',
-  phone: '',
-};
+  text: '',
+  active: true,
+}
 
-function Form({ obj = initialState, addPerson, setEditItem }) {
-  const [formInput, setFormInput] = useState(initialState);
+export default function TaskForm({ handleSubmit }) {
+  const [formInput, setFormInput] = useState(initialState);  
 
-  useEffect(() => {
-    if (obj.name) {
-      setFormInput({
-        name: obj.name,
-        phone: obj.phone,
-      });
-    }
-    // rerender the component if the obj value is different
-  }, [obj]);
+ const onSubmit = (e) => {
+  e.preventDefault();
+  handleSubmit(formInput);
+  setFormInput(initialState);
+ }
 
-  // On call of the resetForm function, reset the state to the initialState
-  const resetForm = () => {
-    setFormInput({ ...initialState });
-    setEditItem({});
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (obj.name) {
-      // update the todo
-      console.warn('Updates come later');
-      resetForm();
-    } else {
-      addPerson(formInput);
-      resetForm();
-    }
-  };
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormInput((prevState) => ({
       ...prevState,
       [name]: value,
@@ -49,53 +27,23 @@ function Form({ obj = initialState, addPerson, setEditItem }) {
   };
 
   return (
-    <div>
-      <div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3 d-flex">
-            <label htmlFor="name" className="form-label visually-hidden">
-              Name
-            </label>
-            <input
-              className="form-control form-control-lg me-1"
-              type="text"
-              id="name"
-              name="name"
-              value={formInput.name}
-              onChange={handleChange}
-              placeholder="ADD A NAME"
-              required
-            />
-            <label htmlFor="phone" className="form-label visually-hidden">
-              Phone
-            </label>
-            <input
-              className="form-control form-control-lg me-1"
-              type="text"
-              id="phone"
-              name="phone"
-              value={formInput.phone}
-              onChange={handleChange}
-              placeholder="ADD A Phone"
-              required
-            />
-            <button className="btn btn-success" type="submit">
-              {obj.name ? 'Update' : 'Submit'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <Form onSubmit={onSubmit}>
+      <Form.Group as={Col} md="6" controlId="validationName">
+        <Form.Label>Create a new Task</Form.Label>
+        <Form.Control
+          required
+          type="text"
+          placeholder="Enter a Task"
+          name="text"
+          value={formInput.text || ''}
+          onChange={handleChange}
+        />
+      </Form.Group>
+      <Button style={{ margin: "5px"}} type="submit">Finish</Button>
+    </Form>
   );
-}
+ }
 
-Form.propTypes = {
-  obj: PropTypes.shape({
-    name: PropTypes.string,
-    phone: PropTypes.string,
-  }).isRequired,
-  addPerson: PropTypes.func.isRequired,
-  setEditItem: PropTypes.func.isRequired,
+ TaskForm.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
 };
-
-export default Form;

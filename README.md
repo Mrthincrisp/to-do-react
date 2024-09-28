@@ -1,8 +1,9 @@
-# React Topics
+# Todo
+This is a simple application that allows you to create a To-Do list, and edit that list
 
-## Starting the Project
-1. From your command line, be in the root directory and run `npm install` OR `npm i` for short.
-1. Next, run `npm run prepare`. This command sets up husky to track eslint errors on commit that will make your deploy fail on Netlify.
-1. Run `npx eslint . --ext .js,.jsx`
-1. To start your application, run `npm run dev`. THIS IS THE COMMAND YOU WILL USE TO RUN YOUR DEVELOPMENT SERVER FROM NOW ON.
-1. Open [http://localhost:3000](http://localhost:3000) with your browser.
+
+## About
+1. You can create a new item to add to the To-Do list.
+1. each task is finishable, moving the item to a finished chore list.
+1. If the task wasn't finished properly, or it just needs to be done again, you can re-add completed tasks.
+1. If you want to delete a task all together, once a task is added to the finished list it can be deleted from there.

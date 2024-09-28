@@ -1,29 +1,45 @@
-import Link from 'next/link';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { addATask, getActiveList, patchTask, updateTodo } from '../api/TodoData';
+import ToDoCard from '../components/ToDoCard';
+import TaskForm from '../components/Form';
 
 function Home() {
+  const [ todo, setTodo ] = useState([])
+  const [refresh, setRefresh] = useState(false);
+  
+  const activeList = async () => {
+    const data = await getActiveList();
+    setTodo(data);
+  }
+
+  const handleUpdate = async (firebaseKey) => {
+    await updateTodo(firebaseKey);
+    setRefresh(!refresh);
+  };
+
+  const handleSubmit = async (formInput) => {
+    const payload = {
+      ...formInput,   
+    };
+    await addATask(payload).then(({ name }) => {
+      const patchPayload = { firebaseKey: name };
+      patchTask(patchPayload.firebaseKey, patchPayload);
+    });
+    setRefresh(!refresh);
+  };
+
+  useEffect(() => {
+    activeList();
+  }, [refresh]);
+
   return (
     <>
-      <h1>Dis da home page!</h1>
-      <ul>
-        <li>
-          <Link href="/">Home</Link>
-        </li>
-        <li>
-          <Link href="/events">Events</Link>
-        </li>
-        <li>
-          <Link href="/props">Props</Link>
-        </li>
-        <li>
-          <Link href="/hooks">Hooks</Link>
-        </li>
-        <li>
-          <Link href="/routes">Routes</Link>
-        </li>
-        <li>
-          <Link href="/forms">Forms</Link>
-        </li>
-      </ul>
+        <TaskForm handleSubmit={handleSubmit} />
+    {todo.map((i) => (
+      <ToDoCard key={i.firebaseKey} toDoObj={i} update={handleUpdate} />
+    ))}
     </>
   );
 }
